@@ -11,7 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Service
-public class FileUploadService {
+public class FileZipperService {
 
     public byte[] zipFiles(List<MultipartFile> files) throws IOException {
         ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();

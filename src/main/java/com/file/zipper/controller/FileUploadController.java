@@ -1,6 +1,6 @@
 package com.file.zipper.controller;
 
-import com.file.zipper.service.FileUploadService;
+import com.file.zipper.service.FileZipperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,12 +19,12 @@ import java.util.List;
 public class FileUploadController {
 
     @Autowired
-    private FileUploadService fileUploadService;
+    private FileZipperService fileZipperService;
 
     @PostMapping("/zipper")
     public ResponseEntity<byte[]> uploadFiles(@RequestParam("files") List<MultipartFile> files) throws IOException {
 
-        byte[] zippedBytes = fileUploadService.zipFiles(files);
+        byte[] zippedBytes = fileZipperService.zipFiles(files);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=files.zip");
