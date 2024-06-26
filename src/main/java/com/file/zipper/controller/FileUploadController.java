@@ -1,6 +1,8 @@
 package com.file.zipper.controller;
 
 import com.file.zipper.service.FileZipperService;
+import com.file.zipper.service.UploadStatisticsService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,17 +21,26 @@ import java.util.List;
 public class FileUploadController {
 
     @Autowired
-    private FileZipperService fileZipperService;
+    private FileZipperService zipperService;
+
+    @Autowired
+    private UploadStatisticsService statisticsService;
 
     @PostMapping("/zipper")
-    public ResponseEntity<byte[]> uploadFiles(@RequestParam("files") List<MultipartFile> files) throws IOException {
+    public ResponseEntity<byte[] > uploadFiles(@RequestParam("files") List<MultipartFile> files, HttpServletRequest request ) {
+        String ipAddress = request.getRemoteAddr();
+        try {
+            byte[] zippedBytes = zipperService.zipFiles(files);
+            statisticsService.updateStatistics(ipAddress);
 
-        byte[] zippedBytes = fileZipperService.zipFiles(files);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "attachment; filename=files.zip");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "attachment; filename=files.zip");
-
-        return new ResponseEntity<>(zippedBytes, headers, HttpStatus.OK);
-
+            return new ResponseEntity<>(zippedBytes, headers, HttpStatus.OK);
+        }
+        catch (IOException e) {
+            System.out.println("Failed to zip files");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
