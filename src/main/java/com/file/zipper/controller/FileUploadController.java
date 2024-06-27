@@ -28,6 +28,12 @@ public class FileUploadController {
 
     @PostMapping("/zipper")
     public ResponseEntity<byte[] > uploadFiles(@RequestParam("files") List<MultipartFile> files, HttpServletRequest request ) {
+        for (MultipartFile file : files) {
+            if (file.getSize() > 1024 * 1024) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+        }
+
         String ipAddress = request.getRemoteAddr();
         try {
             byte[] zippedBytes = zipperService.zipFiles(files);
