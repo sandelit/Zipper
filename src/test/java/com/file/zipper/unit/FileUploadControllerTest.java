@@ -74,7 +74,7 @@ public class FileUploadControllerTest {
 
         ResponseEntity<byte[]> response = fileUploadController.uploadFiles(List.of(largeFile), request);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.PAYLOAD_TOO_LARGE, response.getStatusCode());
         verify(statisticsService, never()).updateStatistics(anyString());
     }
 }

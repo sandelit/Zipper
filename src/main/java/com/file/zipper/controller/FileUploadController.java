@@ -30,7 +30,7 @@ public class FileUploadController {
     public ResponseEntity<byte[] > uploadFiles(@RequestParam("files") List<MultipartFile> files, HttpServletRequest request ) {
         for (MultipartFile file : files) {
             if (file.getSize() > 1024 * 1024) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.PAYLOAD_TOO_LARGE);
             }
         }
 
